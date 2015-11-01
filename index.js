@@ -1,6 +1,5 @@
 'use strict';
 var http       = require('http');
-var path       = require('path');
 var url        = require('url');
 var FileServer = require('./file_server');
 
@@ -16,11 +15,12 @@ var server = http.createServer((request, response) => {
     return;
   }
 
-  fileList.listDirectory(requestedPath, (err, links) => {
+  fileList.listDirectory('.' + requestedPath, (err, links) => {
     if (err) {
       console.log(err);
-      response.end('Oops! An error occurred');
+      response.end('Oops! An error occurred.');
     }
+
     response.write("<!DOCTYPE html><html>");
     response.write("<h2>Hello! Here are the files served: </h2>");
     response.end(links.join(''));

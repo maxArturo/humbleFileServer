@@ -1,23 +1,32 @@
 'use strict';
-
-var fs = require('fs');
+var fs   = require('fs');
+var path = require('path');
 
 // namespace object for module
 var FileServer = function () {};
 
-var generateLinks = (path, dirArray, cb) => {
-  var links = dirArray.map((file) => {
-    var filePath = path + '/' + file;
-    return '<p><a href=' + filePath + '>' + file + '</a></p>'
-  });
-  cb(undefined, links);
-}
 
-// debugger;
-FileServer.prototype.listDirectory = (path, cb) => {
-  fs.readdir(path, (err, files) => {
+var generateLink = (filePath) => {
+  return '<p><a href="' + filePath + '">' + path.basename(filePath) +
+    '</a></p>';
+};
+
+var pathGenerator = (dirPath) => {
+  return (file) => {
+    let fullPath = path.join(dirPath, file);
+    if (fs.statSync(fullPath).isDirectory())
+      fullPath = path.basename(fullPath) + '/';
+    return fullPath;
+  }
+};
+
+FileServer.prototype.listDirectory = (dirPath, cb) => {
+  fs.readdir(dirPath, (err, files) => {
     if (err) { cb(err); }
-    generateLinks(path, files, cb);
+    var generatePath = pathGenerator(dirPath);
+    var directoryList = files.map(generatePath).map(generateLink);
+    directoryList.unshift('<p><a href="' + './..' + '">..</a></p>');
+    cb(null, directoryList);
   });
 };
 
