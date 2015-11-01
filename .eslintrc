@@ -1,0 +1,19 @@
+{
+  // we want to use babel-eslint
+  "parser": "babel-eslint",
+  "env": {
+    // we don't need brwoser global vars
+    "browser": false,
+    // we do need node global vars
+    "node": true
+  },
+  // To give you an idea how to override rule options:
+  "rules": {
+    // single quotes preferred
+    "quotes": [2, "single"],
+    // dangles allowed (some node vars use it)
+    "no-underscore-dangle": [0],
+    // require let or const instead of var
+    "no-var": [2]
+  }
+}
